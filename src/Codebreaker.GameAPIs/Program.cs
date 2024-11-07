@@ -1,5 +1,7 @@
 using Azure.Identity;
 using Codebreaker.GameAPIs;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.FeatureFilters;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +56,10 @@ builder.Services.AddSwaggerGen(options =>
 // Application Services
 
 builder.AddApplicationServices();
+
+builder.Services.AddFeatureManagement()
+    .AddFeatureFilter<TargetingFilter>()
+    .AddFeatureFilter<TimeWindowFilter>();
 
 
 var app = builder.Build();
