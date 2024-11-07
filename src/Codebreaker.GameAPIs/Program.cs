@@ -4,6 +4,8 @@ using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.FeatureFilters;
 using Microsoft.OpenApi.Models;
 
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -29,6 +31,19 @@ builder.AddServiceDefaults();
 //            keyVaultOptions.SetCredential(credential);
 //        });
 //});
+
+builder.Configuration.AddAzureAppConfiguration(options =>
+{
+    DefaultAzureCredential credential = new();
+    string endpoint = builder.Configuration.GetConnectionString("codebreakerconfig") ?? throw new InvalidOperationException("could not read codebreakerconfig");
+    options.Connect(new Uri(endpoint), credential)
+        .Select("GamesAPI*")
+        .ConfigureKeyVault(kv =>
+        {
+            kv.SetCredential(credential);
+        })
+        .UseFeatureFlags();
+});
 
 // Swagger/EndpointDocumentation
 builder.Services.AddEndpointsApiExplorer();
@@ -63,6 +78,14 @@ builder.Services.AddFeatureManagement()
 
 
 var app = builder.Build();
+
+//var solutionEnvironment = "Azure";
+
+
+//if (solutionEnvironment == "Azure")
+//{
+//    app.UseAzureAppConfiguration();
+//}
 
 app.MapDefaultEndpoints();
 

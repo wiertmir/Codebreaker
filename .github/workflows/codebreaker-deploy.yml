@@ -2,11 +2,11 @@ name: Codebreaker Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'src/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'src/**'
 
 # GitHub Actions workflow to deploy to Azure using azd
 # To configure required secrets for connecting to Azure, simply run `azd pipeline config`
